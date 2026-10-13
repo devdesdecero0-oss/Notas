@@ -1,0 +1,6 @@
+#estas son las cosas que nunca se envian a github
+
+.env
+.venv/
+notas.db
+__pycache__/

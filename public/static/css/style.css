@@ -1,0 +1,738 @@
+/* ─────────────────────────────────────────────
+   Design tokens
+───────────────────────────────────────────── */
+:root {
+  --fondo:       #f0f4f8;
+  --panel:       #ffffff;
+  --texto:       #1a1d23;
+  --suave:       #64748b;
+  --borde:       #e2e8f0;
+  --acento:      #3b82f6;
+  --acento-glow: #3b82f620;
+  --peligro:     #ef4444;
+  --card-bg:     #ffffff;
+  --card-sombra: 0 2px 8px rgba(0,0,0,.07), 0 0 1px rgba(0,0,0,.06);
+  --card-hover:  0 8px 24px rgba(0,0,0,.12), 0 0 1px rgba(0,0,0,.08);
+  --radio:       14px;
+  --header-h:    60px;
+  --trans:       .22s cubic-bezier(.4,0,.2,1);
+  --fab-size:    58px;
+}
+:root[data-tema="oscuro"] {
+  --fondo:       #0d1117;
+  --panel:       #161b22;
+  --texto:       #e6edf3;
+  --suave:       #7d8590;
+  --borde:       #21262d;
+  --acento:      #58a6ff;
+  --acento-glow: #58a6ff18;
+  --peligro:     #f85149;
+  --card-bg:     #1c2128;
+  --card-sombra: 0 2px 8px rgba(0,0,0,.3), 0 0 1px rgba(0,0,0,.4);
+  --card-hover:  0 8px 28px rgba(0,0,0,.5), 0 0 1px rgba(0,0,0,.5);
+}
+
+/* ─────────────────────────────────────────────
+   Reset & base
+───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─────────────────────────────────────────────
+   Sistema de pantallas (navegación SPA)
+───────────────────────────────────────────── */
+.pantalla {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--fondo);
+  /* fuera de pantalla hacia la derecha por defecto */
+  transform: translateX(100%);
+  transition: transform .32s cubic-bezier(.4,0,.2,1),
+              opacity   .32s cubic-bezier(.4,0,.2,1);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.pantalla.activa {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: all;
+}
+/* La lista sale hacia la izquierda cuando el editor entra */
+.pantalla.fuera-izq {
+  transform: translateX(-30%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────
+   Botones base
+───────────────────────────────────────────── */
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--texto);
+  border-radius: 10px;
+  transition: background var(--trans), color var(--trans), box-shadow var(--trans);
+  -webkit-tap-highlight-color: transparent;
+}
+button:active { opacity: .75; }
+
+/* ─────────────────────────────────────────────
+   PANTALLA 1 — HEADER LISTA
+───────────────────────────────────────────── */
+.header-lista {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: var(--header-h);
+  background: var(--panel);
+  border-bottom: 1px solid var(--borde);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.header-izq {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-mini {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+.header-lista h1 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -.3px;
+}
+.header-der {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-icono {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background: var(--fondo);
+  color: var(--suave);
+}
+.btn-icono:hover { background: var(--borde); color: var(--texto); }
+.btn-salir:hover { background: #fee2e2; color: var(--peligro); }
+:root[data-tema="oscuro"] .btn-salir:hover { background: #2d1515; }
+
+/* ─────────────────────────────────────────────
+   Barra de filtros
+───────────────────────────────────────────── */
+.barra-filtros {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px 4px;
+  flex-shrink: 0;
+}
+.campo-busqueda {
+  flex: 1;
+  position: relative;
+}
+.icono-buscar {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--suave);
+  pointer-events: none;
+}
+#inputBuscar {
+  font: inherit;
+  font-size: 14px;
+  width: 100%;
+  padding: 9px 12px 9px 34px;
+  border-radius: 10px;
+  border: 1.5px solid var(--borde);
+  background: var(--panel);
+  color: var(--texto);
+  outline: none;
+  transition: border-color var(--trans), box-shadow var(--trans);
+  -webkit-appearance: none;
+  appearance: none;
+}
+#inputBuscar:focus {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px var(--acento-glow);
+}
+#inputBuscar::placeholder { color: var(--suave); }
+
+#selOrden {
+  font: inherit;
+  font-size: 13px;
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: 1.5px solid var(--borde);
+  background: var(--panel);
+  color: var(--texto);
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  flex-shrink: 0;
+}
+#selOrden:focus { border-color: var(--acento); }
+
+/* ─────────────────────────────────────────────
+   Contador de notas
+───────────────────────────────────────────── */
+.contador-notas {
+  padding: 6px 18px 2px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--suave);
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────
+   Grid de notas (tarjetas)
+───────────────────────────────────────────── */
+.grid-notas {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 12px 90px;           /* 90px = espacio para el FAB */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 12px;
+  align-content: start;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tarjeta de nota */
+.card-nota {
+  background: var(--card-bg);
+  border-radius: var(--radio);
+  padding: 14px;
+  cursor: pointer;
+  box-shadow: var(--card-sombra);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 110px;
+  position: relative;
+  transition: box-shadow var(--trans), transform var(--trans);
+  -webkit-tap-highlight-color: transparent;
+  animation: entrarCard .25s both;
+  border: 1.5px solid transparent;
+}
+.card-nota:hover {
+  box-shadow: var(--card-hover);
+  transform: translateY(-2px);
+  border-color: var(--acento);
+}
+.card-nota:active {
+  transform: scale(.97);
+}
+
+@keyframes entrarCard {
+  from { opacity: 0; transform: translateY(8px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.card-fecha {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--suave);
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.card-titulo {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--texto);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.35;
+}
+.card-resumen {
+  font-size: 13px;
+  color: var(--suave);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  line-height: 1.5;
+}
+
+/* Botones de orden manual en la tarjeta */
+.card-mover {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 2px;
+}
+.card-mover button {
+  width: 26px;
+  height: 26px;
+  font-size: 11px;
+  background: var(--fondo);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--suave);
+}
+.card-mover button:hover { background: var(--acento); color: #fff; }
+
+/* ─────────────────────────────────────────────
+   Estado vacío
+───────────────────────────────────────────── */
+.estado-vacio {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 24px 100px;
+  text-align: center;
+  animation: fadeIn .3s both;
+}
+.estado-vacio.oculto { display: none; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.vacio-icono {
+  font-size: 56px;
+  animation: flotar 3s ease-in-out infinite;
+}
+@keyframes flotar {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+.vacio-titulo {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--texto);
+}
+.vacio-subtitulo {
+  font-size: 14px;
+  color: var(--suave);
+  margin-bottom: 6px;
+}
+.btn-primero {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 26px;
+  background: var(--acento);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 50px;
+  box-shadow: 0 4px 18px var(--acento-glow);
+  transition: transform var(--trans), box-shadow var(--trans);
+}
+.btn-primero:hover {
+  transform: scale(1.04);
+  box-shadow: 0 8px 26px rgba(59,130,246,.35);
+}
+
+/* ─────────────────────────────────────────────
+   FAB — Botón flotante (+)
+───────────────────────────────────────────── */
+.fab {
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  width: var(--fab-size);
+  height: var(--fab-size);
+  border-radius: 50%;
+  background: var(--acento);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 20px rgba(59,130,246,.45);
+  z-index: 100;
+  transition: transform var(--trans), box-shadow var(--trans);
+}
+.fab:hover {
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 10px 28px rgba(59,130,246,.6);
+}
+.fab:active { transform: scale(.95); }
+
+/* ─────────────────────────────────────────────
+   PANTALLA 2 — HEADER EDITOR
+───────────────────────────────────────────── */
+.header-editor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px 0 8px;
+  height: var(--header-h);
+  background: var(--panel);
+  border-bottom: 1px solid var(--borde);
+  flex-shrink: 0;
+  gap: 8px;
+}
+.btn-volver {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 12px 8px 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--acento);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.btn-volver:hover { background: var(--acento-glow); }
+
+.estado-guardado {
+  font-size: 13px;
+  color: var(--suave);
+  flex: 1;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.btn-borrar {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--suave);
+  flex-shrink: 0;
+}
+.btn-borrar:hover { background: #fee2e2; color: var(--peligro); }
+:root[data-tema="oscuro"] .btn-borrar:hover { background: #2d1515; }
+
+/* ─────────────────────────────────────────────
+   Input de título
+───────────────────────────────────────────── */
+#titulo {
+  font: inherit;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--texto);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--borde);
+  padding: 14px 18px 12px;
+  outline: none;
+  flex-shrink: 0;
+  transition: border-color var(--trans);
+  letter-spacing: -.2px;
+}
+#titulo:focus { border-bottom-color: var(--acento); }
+#titulo::placeholder { color: var(--suave); font-weight: 400; }
+
+/* ─────────────────────────────────────────────
+   Barra de herramientas de formato
+───────────────────────────────────────────── */
+.herramientas {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--borde);
+  background: var(--panel);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex-shrink: 0;
+}
+.herramientas::-webkit-scrollbar { display: none; }
+
+.herramientas button,
+.herramientas select {
+  font: inherit;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1.5px solid var(--borde);
+  background: transparent;
+  color: var(--texto);
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background var(--trans), border-color var(--trans), color var(--trans);
+}
+.herramientas select { -webkit-appearance: none; appearance: none; }
+.herramientas button:hover { border-color: var(--acento); background: var(--acento-glow); }
+.herramientas button.activo {
+  background: var(--acento);
+  border-color: var(--acento);
+  color: #fff;
+}
+.separador {
+  width: 1px;
+  height: 20px;
+  background: var(--borde);
+  flex-shrink: 0;
+  margin: 0 2px;
+}
+.color {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1.5px solid var(--borde);
+  flex-shrink: 0;
+}
+.color:hover { border-color: var(--acento); }
+.color input {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+/* ─────────────────────────────────────────────
+   Área de escritura
+───────────────────────────────────────────── */
+#contenido {
+  flex: 1;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--texto);
+  padding: 16px 18px 40px;
+  outline: none;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#contenido:empty::before {
+  content: attr(data-placeholder);
+  color: var(--suave);
+  pointer-events: none;
+}
+#contenido ul,
+#contenido ol {
+  margin: .4em 0;
+  padding-left: 1.6em;
+}
+
+/* ─────────────────────────────────────────────
+   LOGIN (sin cambios estructurales)
+───────────────────────────────────────────── */
+.login {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: var(--fondo);
+}
+.caja {
+  background: var(--panel);
+  border: 1.5px solid var(--borde);
+  border-radius: 18px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.08);
+}
+.caja h1 { margin: 0; font-size: 24px; font-weight: 700; }
+.caja input {
+  font: inherit;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1.5px solid var(--borde);
+  background: var(--fondo);
+  color: var(--texto);
+  outline: none;
+  transition: border-color var(--trans), box-shadow var(--trans);
+}
+.caja input:focus {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 3px var(--acento-glow);
+}
+.caja .primario {
+  padding: 13px;
+  background: var(--acento);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  border-radius: 10px;
+}
+.caja .primario:hover { opacity: .9; }
+#error { color: var(--peligro); font-size: 14px; min-height: 1.2em; }
+
+/* ─────────────────────────────────────────────
+   Scrollbar personalizada (escritorio)
+───────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--borde); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--suave); }
+
+/* ─────────────────────────────────────────────
+   Responsive — pantalla grande: lista fija + editor al lado
+   (solo si hay suficiente espacio)
+───────────────────────────────────────────── */
+@media (min-width: 768px) {
+  /* En tablet/desktop se pueden mostrar ambos lados si el dev quiere,
+     por ahora mantenemos la navegación por pantallas para consistencia
+     mobile/desktop */
+  .grid-notas {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  .fab {
+    bottom: 28px;
+    right: 28px;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   Safe area (muesca del iPhone)
+───────────────────────────────────────────── */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .grid-notas  { padding-bottom: calc(90px + env(safe-area-inset-bottom)); }
+  .fab         { bottom: calc(20px + env(safe-area-inset-bottom)); }
+  #contenido   { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
+}
+
+/* ─────────────────────────────────────────────
+   Tareas — checkbox circular animado
+───────────────────────────────────────────── */
+.tarea-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 4px;
+  border-radius: 8px;
+  transition: background var(--trans);
+  cursor: text;
+}
+.tarea-item:hover { background: var(--acento-glow); }
+
+/* ── El círculo ── */
+.tarea-check {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2.5px solid var(--borde);
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .2s ease, transform .15s ease;
+  -webkit-tap-highlight-color: transparent;
+  overflow: visible;
+}
+.tarea-check:hover {
+  border-color: var(--acento);
+  transform: scale(1.12);
+}
+
+/* Relleno con gradiente (escala 0→1 al marcar) */
+.tarea-check::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--acento) 0%, #8b5cf6 100%);
+  transform: scale(0);
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* Checkmark via CSS (borde inferior + derecho rotados) */
+.tarea-check::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  width:  6px;
+  height: 11px;
+  border-right: 2.5px solid #fff;
+  border-bottom: 2.5px solid #fff;
+  border-radius: 1px;
+  transform: rotate(45deg) scale(0) translate(-1px, -1px);
+  transition: transform .22s .08s cubic-bezier(.34,1.56,.64,1);
+}
+
+/* Onda que explota al marcar */
+.tarea-ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 2px solid var(--acento);
+  opacity: 0;
+  transform: scale(1);
+  pointer-events: none;
+}
+
+/* ── Estado MARCADO ── */
+.tarea-item.hecho .tarea-check {
+  border-color: transparent;
+}
+.tarea-item.hecho .tarea-check::before {
+  transform: scale(1);
+}
+.tarea-item.hecho .tarea-check::after {
+  transform: rotate(45deg) scale(1) translate(-1px, -1px);
+}
+.tarea-item.hecho .tarea-texto {
+  text-decoration: line-through;
+  color: var(--suave);
+}
+
+/* ── Animación de clic ── */
+.tarea-check.pop {
+  animation: tareaPop .32s ease-out;
+}
+@keyframes tareaPop {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(.8); }
+  70%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.tarea-ring.onda {
+  animation: tareaOnda .55s ease-out forwards;
+}
+@keyframes tareaOnda {
+  0%   { opacity: .65; transform: scale(1);   }
+  100% { opacity: 0;   transform: scale(2.4); }
+}

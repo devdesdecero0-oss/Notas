@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar - NoteX</title>
+  <link rel="icon" type="image/png" href="/static/imagenes/icon-192.png">
+  <link rel="apple-touch-icon" href="/static/imagenes/icon-192.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#38bdf8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="NoteX">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <main class="login">
+    <form id="formulario" class="caja">
+      <h1>Mis Notas</h1>
+      <input id="clave" type="password" placeholder="Contraseña" autocomplete="current-password" required autofocus>
+      <div id="error"></div>
+      <button type="submit" class="primario">Entrar</button>
+    </form>
+  </main>
+  <script src="/static/js/login.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
